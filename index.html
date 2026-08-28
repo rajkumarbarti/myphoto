@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D AI फेस्टिवल पोस्टर</title>
     
+    <!-- आपका विज्ञापन कोड यहाँ सुरक्षित रूप से जोड़ा गया है -->
+    <script src="https://pl31008431.profitableratecpmnetwork.com/18/a7/73/18a773cc1ffc556738ba4fb2eac52902.js"></script>
+
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0d0000; color: white; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; }
@@ -17,12 +20,11 @@
         .input-group input, .input-group select { width: 100%; padding: 6px; border-radius: 6px; border: 1px solid #ffcc00; background: #fff; color: #000; font-size: 12px; }
         
         .canvas-container { width: 100%; display: flex; justify-content: center; margin-bottom: 12px; position: relative; }
-        canvas { width: 100%; max-width: 900px; height: auto; border: 3px solid #ffcc00; border-radius: 10px; box-shadow: 0 8px 25px rgba(0,0,0,0.9); background: #000; }
+        canvas { width: 100%; max-width: 900px; height: auto; border: 3px solid #ffcc00; border-radius: 10px; box-shadow: 0 8px 25px rgba(0,0,0,0.9); background: #200; }
 
         .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
         button.action-btn { background: linear-gradient(45deg, #ff9900, #ff3300); color: white; border: none; padding: 12px 18px; font-size: 14px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(255,153,0,0.4); }
         button.whatsapp-btn { background: linear-gradient(45deg, #25D366, #128C7E); color: white; border: none; padding: 12px 18px; font-size: 14px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); }
-        
         button:disabled { opacity: 0.7; cursor: not-allowed; }
     </style>
 </head>
@@ -30,7 +32,7 @@
 
 <div class="app-card">
     <h2>✨ 3D AI फेस्टिवल पोस्टर ✨</h2>
-    <p class="sub">वीडियो डाउनलोड और WhatsApp शेयर के साथ</p>
+    <p class="sub">बाउंसिंग टेक्स्ट और परफेक्ट एनिमेशन के साथ</p>
 
     <div class="controls-grid">
         <div class="input-group">
@@ -75,7 +77,7 @@
         </div>
 
         <div class="input-group" style="grid-column: span 2;">
-            <label style="color:#00ffcc;">3. मैन्युअल बैकग्राउंड (वैकल्पिक):</label>
+            <label style="color:#00ffcc;">3. मैन्युअल बैकग्राउंड फोटो चुनें:</label>
             <input type="file" id="bgFileInput" accept="image/*" multiple>
         </div>
 
@@ -99,72 +101,50 @@
     const canvas = document.getElementById('posterCanvas');
     const ctx = canvas.getContext('2d');
 
-    let bgImagesList = []; 
+    let manualBgImages = []; 
     let processedUserImages = []; 
     let wishX = canvas.width;
     let wishColorHue = 0;
+    let globalTime = 0;
 
-    let textBounceX = 400, textBounceY = 220;
-    let textVelX = 3.0, textVelY = 2.2;
+    let bX = 200, bY = 150;
+    let bSpeedX = 4.0, bSpeedY = 3.0;
+    let bColor = "#ff0055";
 
-    function getUrlsForSelection(key) {
-        const urlMap = {
-            'day_1': ["day suv/sunday.webp"],
-            'day_2': ["day suv/monday.webp", "day suv/monday2.webp"],
-            'day_3': ["day suv/tuesday2.webp", "day suv/tursday2.webp"],
-            'day_4': ["day suv/wednesday.webp", "day suv/wednesday2.webp"],
-            'day_5': ["day suv/thursday.webp"],
-            'day_6': ["day suv/friday.webp", "day suv/friday2.webp"],
-            'day_7': ["day suv/staurday.webp", "day suv/staurday2.webp", "day suv/saturday2.webp"],
-            
-            'nav_1': ["nawratri 10 day p/1-Shailaputri.webp", "nawratri 10 day p/1-Shailaputri2.webp"],
-            'nav_2': ["nawratri 10 day p/2-Brahmacharini.webp", "nawratri 10 day p/2-Brahmacharini2.webp"],
-            'nav_3': ["nawratri 10 day p/3-Chandraghanta.webp"],
-            'nav_4': ["nawratri 10 day p/4-Kushmanda.webp"],
-            'nav_5': ["nawratri 10 day p/5-Skandamata.webp"],
-            'nav_6': ["nawratri 10 day p/6-Katyayani.webp"],
-            'nav_7': ["nawratri 10 day p/7-Kalaratri.webp"],
-            'nav_8': ["nawratri 10 day p/8-Mahagauri.webp"],
-            'nav_9': ["nawratri 10 day p/9-Siddhidatri.webp"],
-            'nav_10': ["nawratri 10 day p/10-Vijayadashami.webp"],
-
-            'fest_dhanteras': ["diw and dasa/1_Dhanteras.webp", "diw and dasa/dhanerash.webp"],
-            'fest_nahay_khay': ["diw and dasa/1_Nahay_Khay.webp"],
-            'fest_diwali': ["diw and dasa/2_Main_Diwali_Mahalakshmi_.webp", "diw and dasa/diwali 2.webp"],
-            'fest_govardhan': ["diw and dasa/_3_Govardhan_Puja.webp"],
-            'fest_kharna': ["diw and dasa/_Kharna.webp"],
-            'fest_chath': ["diw and dasa/chath subah.webp"],
-            'fest_janmashtami': ["diw and dasa/janm asthami.webp", "diw and dasa/janm asthami 2.webp"]
-        };
-        return urlMap[key] || [];
+    function getBouncingText(key) {
+        if (key.startsWith('nav_')) return "🌟 जय माता दी 🌟";
+        if (key.includes('chath') || key.includes('kharna') || key.includes('nahay')) return "☀️ शुभ छठ पूजा ☀️";
+        if (key.includes('diwali') || key.includes('dhanteras') || key.includes('govardhan')) return "🪔 शुभ दीपावली 🪔";
+        if (key.includes('janmashtami')) return "🈁 जय श्री कृष्ण 🈁";
+        if (key.includes('day')) return "🚩 जय श्री राम 🚩";
+        return "✨ शुभ पर्व ✨";
     }
 
-    function loadSelectedImages(key) {
-        bgImagesList = [];
-        const urlsToLoad = getUrlsForSelection(key);
-        urlsToLoad.forEach(url => {
-            let img = new Image();
-            img.crossOrigin = "anonymous";
-            img.onload = () => { bgImagesList.push(img); };
-            img.src = encodeURI(url);
-        });
-    }
-
-    loadSelectedImages(document.getElementById('festivalSelect').value);
-
-    document.getElementById('festivalSelect').addEventListener('change', function(e) {
-        loadSelectedImages(e.target.value);
-    });
-
-    const bouncingShortText = { 
-        'day_1': 'शुभ रविवार!', 'day_2': 'शुभ सोमवार!', 'day_3': 'शुभ मंगलवार!', 
-        'day_4': 'शुभ बुधवार!', 'day_5': 'शुभ गुरुवार!', 'day_6': 'शुभ शुक्रवार!', 'day_7': 'शुभ शनिवार!',
-        'nav_1': 'जय माता दी!', 'nav_2': 'जय माता दी!', 'nav_3': 'जय माता दी!', 'nav_4': 'जय माता दी!',
-        'nav_5': 'जय माता दी!', 'nav_6': 'जय माता दी!', 'nav_7': 'जय माता दी!', 'nav_8': 'जय महाअष्टमी!',
-        'nav_9': 'जय महानवमी!', 'nav_10': 'शुभ विजयादशमी!',
-        'fest_dhanteras': 'शुभ धनतेरस!', 'fest_nahay_khay': 'शुभ नहाय खाय!', 'fest_diwali': 'शुभ दीपावली!',
-        'fest_govardhan': 'शुभ गोवर्धन पूजा!', 'fest_kharna': 'शुभ खरना!', 'fest_chath': 'शुभ छठ पूजा!',
-        'fest_janmashtami': 'जय श्री कृष्णा!'
+    const sideQuotes4Lines = { 
+        'day_1': ['रविवार का दिन', 'ऊर्जा और', 'उत्साह से', 'भरे 🌟'], 
+        'day_2': ['सोमवार लाए', 'जीवन में', 'नई', 'शुरुआत ✨'], 
+        'day_3': ['मंगलवार का दिन', 'बढ़ाए', 'आपका', 'साहस 💪'], 
+        'day_4': ['बुधवार बने', 'बुद्धि और', 'ज्ञान का', 'प्रतीक 🌸'], 
+        'day_5': ['गुरुवार दे', 'आपको', 'सफलता का', 'प्रकाश ☀️'], 
+        'day_6': ['शुक्रवार लाए', 'घर में', 'सुख और', 'समृद्धि 🌺'], 
+        'day_7': ['शनिवार को', 'करें कर्म', 'प्रधान', 'शुभ दिन ⚡'],
+        'nav_1': ['माँ शैलपुत्री', 'की कृपा', 'सदा आप पर', 'बनी रहे 🙏'], 
+        'nav_2': ['माँ ब्रह्मचारिणी', 'दें आपको', 'अटल', 'ज्ञान 🌼'], 
+        'nav_3': ['माँ चंद्रघंटा', 'हर लें', 'आपके', 'सारे संकट 🛡️'], 
+        'nav_4': ['माँ कुष्मांडा', 'प्रदान करें', 'उत्तम', 'आरोग्य 🌿'],
+        'nav_5': ['माँ स्कंदमाता', 'का आशीर्वाद', 'जीवन को', 'महकाए 🌸'], 
+        'nav_6': ['माँ कात्यायनी', 'करें सबका', 'कल्याण और', 'उद्धार ✨'], 
+        'nav_7': ['माँ कालरात्रि', 'करें हमेशा', 'आपकी', 'सुरक्षा ⚡'], 
+        'nav_8': ['महाअष्टमी पर', 'माँ की', 'भक्ति में', 'लीन हो जाओ 🌺'],
+        'nav_9': ['महानवमी पर', 'बरसे माँ की', 'विशेष', 'असीम कृपा 🌟'], 
+        'nav_10': ['विजयदशमी पर', 'सत्य की', 'सदा होती है', 'जीत 🏹'],
+        'fest_dhanteras': ['धनतेरस पर', 'आपके घर', 'बरसे अपार', 'धन 🪙'], 
+        'fest_nahay_khay': ['नहाय खाय के', 'साथ हो', 'पवित्र', 'मन 🍃'], 
+        'fest_diwali': ['दीपावली का', 'दीपक रोशन', 'करे आपका', 'जीवन 🪔'],
+        'fest_govardhan': ['गोवर्धन पूजा', 'से मिले', 'सुख और', 'समृद्धि ⛰️'], 
+        'fest_kharna': ['खरना व्रत से', 'आए जीवन में', 'पवित्रता', 'सुख 🌾'], 
+        'fest_chath': ['छठ मइया का', 'आशीर्वाद', 'सबको मिले', 'अद्भुत ☀️'],
+        'fest_janmashtami': ['श्री कृष्ण', 'जन्माष्टमी की', 'मच जाए', 'धूम 🈁']
     };
 
     const festivalWishesText = {
@@ -189,24 +169,26 @@
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
             size: Math.random() * 5 + 2,
-            speedY: Math.random() * 1.5 + 0.5,
-            speedX: Math.random() * 1 - 0.5,
+            speedY: Math.random() * 1.2 + 0.4,
+            speedX: Math.random() * 0.8 - 0.4,
             alpha: Math.random()
         });
     }
 
     document.getElementById('bgFileInput').addEventListener('change', function(e) {
         let files = Array.from(e.target.files);
-        if (files.length > 0) bgImagesList = []; 
-        files.forEach(file => {
-            let reader = new FileReader();
-            reader.onload = (event) => {
-                let img = new Image();
-                img.onload = () => bgImagesList.push(img);
-                img.src = event.target.result;
-            };
-            reader.readAsDataURL(file);
-        });
+        if (files.length > 0) {
+            manualBgImages = []; 
+            files.forEach(file => {
+                let reader = new FileReader();
+                reader.onload = (event) => {
+                    let img = new Image();
+                    img.onload = () => { manualBgImages.push(img); };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
     });
 
     document.getElementById('userFileInput').addEventListener('change', function(e) {
@@ -239,56 +221,95 @@
         resImg.src = tempCanvas.toDataURL();
     }
 
-    function draw3DSlideshow(vibeScale) {
+    function drawBackground(vibeScale) {
         let time = Date.now() * 0.002;
+        
         let grad = ctx.createRadialGradient(
-            canvas.width / 2 + Math.sin(time) * 200, 
+            canvas.width / 2 + Math.sin(time) * 150, 
             canvas.height / 2 + Math.cos(time) * 100, 
-            50, canvas.width / 2, canvas.height / 2, 700
+            40, canvas.width / 2, canvas.height / 2, 800
         );
-        grad.addColorStop(0, '#ff3300');
-        grad.addColorStop(0.5, '#4a0000');
-        grad.addColorStop(1, '#050005');
+        grad.addColorStop(0, '#ff5500');
+        grad.addColorStop(0.5, '#600000');
+        grad.addColorStop(1, '#180000');
         
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        if (bgImagesList.length === 0) return;
+        if (manualBgImages.length > 0) {
+            let totalTime = (Date.now() / 1000) % (manualBgImages.length * 5);
+            let photoIndex = Math.floor(totalTime / 5);
+            let currentImg = manualBgImages[photoIndex % manualBgImages.length];
 
-        let totalTime = (Date.now() / 1000) % 30;
-        let photoIndex = Math.floor(totalTime / 10);
-        let currentImg = bgImagesList[photoIndex % bgImagesList.length];
-        let progressInSlot = (totalTime % 10) / 10;
-
-        ctx.save();
-        ctx.translate(canvas.width / 2, canvas.height / 2);
-        let baseScale = 1.0 + Math.sin(progressInSlot * Math.PI) * 0.05;
-        let finalScale = baseScale * vibeScale;
-        ctx.scale(finalScale, finalScale);
-
-        if (currentImg && currentImg.complete && currentImg.naturalWidth !== 0) {
-            try { ctx.drawImage(currentImg, -canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height); } catch(e){}
+            if (currentImg && currentImg.complete && currentImg.naturalWidth !== 0) {
+                ctx.save();
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                let baseScale = 1.0 + Math.sin((totalTime % 5) * Math.PI / 5) * 0.03;
+                let finalScale = baseScale * vibeScale;
+                ctx.scale(finalScale, finalScale);
+                try { 
+                    ctx.drawImage(currentImg, -canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height); 
+                } catch(e){}
+                ctx.restore();
+            }
         }
-        ctx.restore();
+    }
+
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
     }
 
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        globalTime += 0.03;
 
-        let vibeScale = 1.0 + (Math.sin(Date.now() * 0.01) * 0.03);
-
-        draw3DSlideshow(vibeScale);
+        let vibeScale = 1.0 + (Math.sin(Date.now() * 0.004) * 0.03);
+        drawBackground(vibeScale);
 
         particles.forEach(p => {
             ctx.save();
             ctx.beginPath();
-            ctx.fillStyle = `rgba(255, 215, 0, ${p.alpha})`;
+            ctx.fillStyle = `rgba(255, 220, 0, ${p.alpha})`;
             ctx.arc(p.x, p.y, p.size * vibeScale, 0, Math.PI * 2);
             ctx.fill();
             ctx.restore();
             p.y -= p.speedY; p.x += p.speedX;
             if (p.y < 0) p.y = canvas.height;
+            if (p.x > canvas.width) p.x = 0;
+            if (p.x < 0) p.x = canvas.width;
         });
+
+        let selFest = document.getElementById('festivalSelect').value;
+        let bounceText = getBouncingText(selFest);
+
+        ctx.save();
+        ctx.font = "bold 38px 'Segoe UI', Arial";
+        ctx.shadowColor = "#ffffff";
+        ctx.shadowBlur = 25;
+        ctx.fillStyle = bColor;
+
+        bX += bSpeedX;
+        bY += bSpeedY;
+
+        let textWidth = ctx.measureText(bounceText).width;
+        let textHeight = 35;
+
+        if (bX <= 20 || bX + textWidth >= canvas.width - 20) {
+            bSpeedX *= -1;
+            bColor = getRandomColor();
+        }
+        if (bY - textHeight <= 30 || bY >= canvas.height - 90) {
+            bSpeedY *= -1;
+            bColor = getRandomColor();
+        }
+
+        ctx.fillText(bounceText, bX, bY);
+        ctx.restore();
 
         let pWidth = 220, pHeight = 270, pY = canvas.height - pHeight - 45;
         let name = document.getElementById('userNameInput').value;
@@ -298,78 +319,63 @@
             let currentX = index === 0 ? photoX : (canvas.width - pWidth - 15);
             ctx.drawImage(img, currentX, pY, pWidth, pHeight);
             ctx.save();
-            ctx.fillStyle = "#ffcc00"; ctx.shadowColor = "#000"; ctx.shadowBlur = 10;
-            ctx.font = "bold 32px Arial"; ctx.textAlign = "center";
-            ctx.fillText(name, currentX + (pWidth / 2), pY + pHeight + 32);
+            ctx.fillStyle = "#ffff00";
+            ctx.shadowColor = "#ff0000"; 
+            ctx.shadowBlur = 15;
+            ctx.font = "bold 36px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText(name, currentX + (pWidth / 2), pY + pHeight + 35);
             ctx.restore();
         });
 
-        textBounceX += textVelX; textBounceY += textVelY;
-        if (textBounceX <= 220 || textBounceX >= canvas.width - 220) textVelX = -textVelX;
-        if (textBounceY <= 80 || textBounceY >= canvas.height - 130) textVelY = -textVelY;
-        let selFest = document.getElementById('festivalSelect').value;
-        
+        let lines = sideQuotes4Lines[selFest] || ['शुभकामनाएं', '', '', ''];
+
         ctx.save();
-        ctx.font = "bold 28px Arial"; ctx.fillStyle = `hsl(${(Date.now()/20)%360}, 100%, 60%)`;
-        ctx.shadowColor = "#ff0000"; ctx.shadowBlur = 12;
-        ctx.fillText(bouncingShortText[selFest] || "शुभकामनाएं!", textBounceX, textBounceY);
+        ctx.font = "bold 38px 'Segoe UI', Arial";
+        ctx.textAlign = "left";
+        ctx.shadowColor = "#ff5500";
+        ctx.shadowBlur = 20;
+
+        let startX = 25;
+        let startY = 85;
+        let lineSpacing = 52;
+
+        lines.forEach((textLine, idx) => {
+            let lineCycle = Math.sin(globalTime + (idx * 0.8));
+            let alpha = Math.max(0.4, (lineCycle + 1) / 2); 
+            let yOffset = lineCycle * 14;
+
+            ctx.fillStyle = `rgba(255, 255, 120, ${alpha})`;
+            ctx.fillText(textLine, startX, startY + (idx * lineSpacing) + yOffset);
+        });
+
         ctx.restore();
 
         let wishSentence = festivalWishesText[selFest] || "हार्दिक शुभकामनाएं!";
         let fullScrollingText = (name ? ("✨ " + name + " की ओर से — ") : "") + wishSentence + " 🙏";
         
         ctx.save();
-        ctx.font = "bold 34px 'Segoe UI', Arial";
+        ctx.font = "bold 40px 'Segoe UI', Arial";
         let clipLeftLimit = processedUserImages.length > 0 ? (photoX + pWidth + 15) : 260;
         ctx.beginPath();
         ctx.rect(clipLeftLimit, canvas.height - 70, canvas.width - clipLeftLimit, 70);
         ctx.clip();
 
         wishX -= 3.5;
-        ctx.fillStyle = `hsl(${wishColorHue}, 100%, 65%)`;
-        ctx.shadowColor = "#ff9900"; ctx.shadowBlur = 15;
+        ctx.fillStyle = `hsl(${wishColorHue}, 100%, 75%)`;
+        ctx.shadowColor = "#ffffff"; 
+        ctx.shadowBlur = 15;
+        ctx.textBaseline = "alphabetic";
         ctx.fillText(fullScrollingText, wishX, canvas.height - 20);
         
-        let textWidth = ctx.measureText(fullScrollingText).width;
-        if (wishX < -(textWidth + 50)) { 
+        let textWidthScroll = ctx.measureText(fullScrollingText).width;
+        if (wishX < -(textWidthScroll + 50)) { 
             wishX = canvas.width; 
             wishColorHue = (wishColorHue + 60) % 360; 
         }
         ctx.restore();
 
         requestAnimationFrame(animate);
-    }
-
-    function startRecordingAndProcess(onComplete) {
-        const stream = canvas.captureStream(30);
-        let mimeType = '';
-        const types = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm', 'video/mp4'];
-        for (let i = 0; i < types.length; i++) {
-            if (MediaRecorder.isTypeSupported(types[i])) { mimeType = types[i]; break; }
-        }
-
-        let mediaRecorder;
-        try {
-            mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType: mimeType }) : new MediaRecorder(stream);
-        } catch (e) {
-            mediaRecorder = new MediaRecorder(stream);
-        }
-
-        const recordedChunks = [];
-        mediaRecorder.ondataavailable = (e) => {
-            if (e.data && e.data.size > 0) recordedChunks.push(e.data);
-        };
-
-        mediaRecorder.onstop = () => {
-            const finalMime = mediaRecorder.mimeType || 'video/webm';
-            const blob = new Blob(recordedChunks, { type: finalMime });
-            onComplete(blob, finalMime.includes('mp4') ? 'mp4' : 'webm');
-        };
-
-        mediaRecorder.start(1000);
-        setTimeout(() => {
-            if (mediaRecorder.state !== "inactive") mediaRecorder.stop();
-        }, 10000);
     }
 
     // वीडियो डाउनलोड बटन
@@ -385,34 +391,42 @@
             btn.innerText = `⏳ वीडियो बन रही है... (${percent}%)`;
         }, intervalTime);
 
-        startRecordingAndProcess((blob, ext) => {
-            clearInterval(progressInterval);
-            btn.innerText = `📥 डाउनलोड हो रहा है...`;
+        const stream = canvas.captureStream(30);
+        let mediaRecorder;
+        try {
+            mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+        } catch (e) {
+            mediaRecorder = new MediaRecorder(stream);
+        }
 
+        const recordedChunks = [];
+        mediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) recordedChunks.push(e.data); };
+        mediaRecorder.onstop = () => {
+            clearInterval(progressInterval);
+            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+            btn.innerText = `📥 डाउनलोड हो रहा है...`;
             setTimeout(() => {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
-                a.href = url;
-                a.download = `3D_Poster_Video.${ext}`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                
+                a.href = url; a.download = `3D_Poster_Video.webm`;
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
                 btn.innerText = "📥 वीडियो डाउनलोड";
                 btn.disabled = false;
             }, 500);
-        });
+        };
+
+        mediaRecorder.start(1000);
+        setTimeout(() => { if (mediaRecorder.state !== "inactive") mediaRecorder.stop(); }, 10000);
     });
 
-    // WhatsApp शेयर बटन (लिंक को नई लाइन में सेट किया गया है ताकि लाइव होने पर क्लिकेबल बने)
+    // WhatsApp शेयर बटन
     document.getElementById('whatsappShareBtn').addEventListener('click', function() {
         let name = document.getElementById('userNameInput').value || "मेरे मित्र";
-        let text = `✨ 3D AI फेस्टिवल पोस्टर! ✨\n\n${name} की तरफ से आपको शुभकामनाएं। खुद का पोस्टर बनाने के लिए नीचे दिए गए लिंक पर क्लिक करें:\n\n${window.location.href}`;
+        let text = `✨ 3D AI फेस्टिवल पोस्टर! ✨\n\n${name} की तरफ से आपको शुभकामनाएं।`;
         let url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
         window.open(url, '_blank');
     });
 
-    // एनिमेशन शुरू करें
     requestAnimationFrame(animate);
 </script>
 
