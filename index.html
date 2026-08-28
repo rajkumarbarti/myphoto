@@ -22,7 +22,6 @@
         .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
         button.action-btn { background: linear-gradient(45deg, #ff9900, #ff3300); color: white; border: none; padding: 12px 18px; font-size: 14px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(255,153,0,0.4); }
         button.whatsapp-btn { background: linear-gradient(45deg, #25D366, #128C7E); color: white; border: none; padding: 12px 18px; font-size: 14px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); }
-        button.sms-btn { background: linear-gradient(45deg, #0088cc, #004466); color: white; border: none; padding: 12px 18px; font-size: 14px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4); }
         
         button:disabled { opacity: 0.7; cursor: not-allowed; }
     </style>
@@ -31,7 +30,7 @@
 
 <div class="app-card">
     <h2>✨ 3D AI फेस्टिवल पोस्टर ✨</h2>
-    <p class="sub">पॉप-अप समस्या का 100% पक्का समाधान (WhatsApp और SMS लिंक्स)</p>
+    <p class="sub">वीडियो डाउनलोड और WhatsApp शेयर के साथ</p>
 
     <div class="controls-grid">
         <div class="input-group">
@@ -93,7 +92,6 @@
     <div class="btn-group">
         <button class="action-btn" id="recordVideoBtn">📥 वीडियो डाउनलोड</button>
         <button class="whatsapp-btn" id="whatsappShareBtn">💬 WhatsApp शेयर</button>
-        <button class="sms-btn" id="smsShareBtn">💬 मैसेज (SMS) शेयर</button>
     </div>
 </div>
 
@@ -111,32 +109,32 @@
 
     function getUrlsForSelection(key) {
         const urlMap = {
-            'day_1': ["day suv/sundav.webp"],
-            'day_2': ["day suv/mondav.webp", "day suv/mondav2.webp"],
-            'day_3': ["day suv/tuesday2.webp", "day suv/tursdav2.webp"],
-            'day_4': ["day suv/wednesdav.webp", "day suv/wednesdav2.webp"],
-            'day_5': ["day suv/thursdav.webp"],
-            'day_6': ["day suv/fridav.webp", "day suv/fridav2.webp"],
-            'day_7': ["day suv/staurdav.webp", "day suv/staurdav2.webp", "day suv/saturday2.webp"],
+            'day_1': ["day suv/sunday.webp"],
+            'day_2': ["day suv/monday.webp", "day suv/monday2.webp"],
+            'day_3': ["day suv/tuesday2.webp", "day suv/tursday2.webp"],
+            'day_4': ["day suv/wednesday.webp", "day suv/wednesday2.webp"],
+            'day_5': ["day suv/thursday.webp"],
+            'day_6': ["day suv/friday.webp", "day suv/friday2.webp"],
+            'day_7': ["day suv/staurday.webp", "day suv/staurday2.webp", "day suv/saturday2.webp"],
             
             'nav_1': ["nawratri 10 day p/1-Shailaputri.webp", "nawratri 10 day p/1-Shailaputri2.webp"],
             'nav_2': ["nawratri 10 day p/2-Brahmacharini.webp", "nawratri 10 day p/2-Brahmacharini2.webp"],
             'nav_3': ["nawratri 10 day p/3-Chandraghanta.webp"],
             'nav_4': ["nawratri 10 day p/4-Kushmanda.webp"],
             'nav_5': ["nawratri 10 day p/5-Skandamata.webp"],
-            'nav_6': ["nawratri 10 day p/6-Katvavani.webp"],
+            'nav_6': ["nawratri 10 day p/6-Katyayani.webp"],
             'nav_7': ["nawratri 10 day p/7-Kalaratri.webp"],
             'nav_8': ["nawratri 10 day p/8-Mahagauri.webp"],
             'nav_9': ["nawratri 10 day p/9-Siddhidatri.webp"],
-            'nav_10': ["nawratri 10 day p/10-Viiavadashami.webp"],
+            'nav_10': ["nawratri 10 day p/10-Vijayadashami.webp"],
 
-            'fest_dhanteras': ["diw and dasa/1 Dhanteras.webp", "diw and dasa/dhanterash.webp"],
-            'fest_nahay_khay': ["diw and dasa/1 Nahay Khav.webp"],
-            'fest_diwali': ["diw and dasa/2 Main Diwali Mahalakshmi Puiat.webp", "diw and dasa/diwali 2.webp"],
-            'fest_govardhan': ["diw and dasa/3 Govardhan Puia.webp"],
-            'fest_kharna': ["diw and dasa/Kharna.webp"],
+            'fest_dhanteras': ["diw and dasa/1_Dhanteras.webp", "diw and dasa/dhanerash.webp"],
+            'fest_nahay_khay': ["diw and dasa/1_Nahay_Khay.webp"],
+            'fest_diwali': ["diw and dasa/2_Main_Diwali_Mahalakshmi_.webp", "diw and dasa/diwali 2.webp"],
+            'fest_govardhan': ["diw and dasa/_3_Govardhan_Puja.webp"],
+            'fest_kharna': ["diw and dasa/_Kharna.webp"],
             'fest_chath': ["diw and dasa/chath subah.webp"],
-            'fest_janmashtami': ["diw and dasa/ianm asthami.webp", "diw and dasa/ianm asthami 2.webp"]
+            'fest_janmashtami': ["diw and dasa/janm asthami.webp", "diw and dasa/janm asthami 2.webp"]
         };
         return urlMap[key] || [];
     }
@@ -374,7 +372,7 @@
         }, 10000);
     }
 
-    // 1. वीडियो डाउनलोड बटन
+    // वीडियो डाउनलोड बटन
     document.getElementById('recordVideoBtn').addEventListener('click', function() {
         let btn = this;
         if (btn.disabled) return;
@@ -406,7 +404,17 @@
         });
     });
 
-    // 2. WhatsApp शेयर बटन (डायरेक्ट रिडायरेक्ट तरीका - पॉप-अप ब्लॉक नहीं होगा)
+    // WhatsApp शेयर बटन (लिंक को नई लाइन में सेट किया गया है ताकि लाइव होने पर क्लिकेबल बने)
     document.getElementById('whatsappShareBtn').addEventListener('click', function() {
-        let festivalName = document.getElementById('festivalSelect').options[document.getElementById('festivalSelect').selectedIndex].text;
-        let userName =
+        let name = document.getElementById('userNameInput').value || "मेरे मित्र";
+        let text = `✨ 3D AI फेस्टिवल पोस्टर! ✨\n\n${name} की तरफ से आपको शुभकामनाएं। खुद का पोस्टर बनाने के लिए नीचे दिए गए लिंक पर क्लिक करें:\n\n${window.location.href}`;
+        let url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+        window.open(url, '_blank');
+    });
+
+    // एनिमेशन शुरू करें
+    requestAnimationFrame(animate);
+</script>
+
+</body>
+</html>
