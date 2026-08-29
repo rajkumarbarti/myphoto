@@ -143,6 +143,32 @@ button:disabled{opacity:.7;cursor:not-allowed}
 <canvas id="posterCanvas" width="1200" height="675"></canvas>
 </div>
 
+
+<div class="btn-group" style="margin:12px 0">
+  <button class="action-btn" id="openSuvicharTab">💡 सुविचार</button>
+</div>
+
+<div id="suvicharPanel" style="display:none;margin:12px 0;padding:14px;border-radius:12px;background:rgba(0,0,0,.35)">
+  <div class="input-group" style="margin-bottom:10px">
+    <label>✍️ अपना सुविचार लिखें / Paste करें:</label>
+    <textarea id="suvicharQuickInput" rows="4" placeholder="यहाँ अपना सुविचार लिखें या paste करें..." style="width:100%;box-sizing:border-box"></textarea>
+    <button class="action-btn" id="useTypedSuvichar" style="margin-top:8px">✓ इस सुविचार को लगाएँ</button>
+  </div>
+
+  <div class="input-group">
+    <label>🌐 ऑनलाइन सुविचार:</label>
+    <select id="onlineSuvicharSelect" style="width:100%;padding:10px">
+      <option value="">सुविचार चुनें…</option>
+    </select>
+    <button class="action-btn" id="newOnlineSuvichar" style="margin-top:8px">🔄 नया सुविचार</button>
+  </div>
+
+  <div id="suvicharAdArea" style="margin-top:14px">
+    <div style="font-size:12px;opacity:.75;margin-bottom:6px">विज्ञापन</div>
+    <div id="suvicharAdContent"></div>
+  </div>
+</div>
+
 <div class="btn-group">
 <button class="action-btn" id="recordVideoBtn">📥 वीडियो डाउनलोड</button>
 <button class="whatsapp-btn" id="whatsappShareBtn">💬 WhatsApp शेयर</button>
@@ -446,6 +472,111 @@ function getBouncingText(key){
   if(key.includes('janmashtami'))return '🈁 जय श्री कृष्ण 🈁';
   if(key.includes('day'))return '🚩 जय श्री राम 🚩';
   return '✨ शुभ पर्व ✨';
+}
+
+
+// ===== Automatic Hindi Calendar / Festival Mode =====
+// Online festival check; if unavailable, automatically falls back to today's weekday.
+const FESTIVAL_API_URL='https://indian-festival-api.vercel.app/api/festivals';
+
+const FESTIVAL_KEYWORDS={
+  'diwali':'fest_diwali',
+  'deepavali':'fest_diwali',
+  'dhanteras':'fest_dhanteras',
+  'dhanterash':'fest_dhanteras',
+  'govardhan':'fest_govardhan',
+  'kharna':'fest_kharna',
+  'nahay khay':'fest_nahay_khay',
+  'nahay-khay':'fest_nahay_khay',
+  'chhath':'fest_chath',
+  'chath':'fest_chath',
+  'janmashtami':'fest_janmashtami',
+  'krishna janmashtami':'fest_janmashtami',
+  'shailaputri':'nav_1',
+  'brahmacharini':'nav_2',
+  'chandraghanta':'nav_3',
+  'kushmanda':'nav_4',
+  'skandamata':'nav_5',
+  'katyayani':'nav_6',
+  'kalaratri':'nav_7',
+  'mahagauri':'nav_8',
+  'siddhidatri':'nav_9',
+  'vijayadashami':'nav_10',
+  'dussehra':'nav_10',
+  'dashami':'nav_10'
+};
+
+function getTodayIST(){
+  const parts=new Intl.DateTimeFormat('en-CA',{
+    timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'
+  }).formatToParts(new Date());
+  const v={};
+  parts.forEach(p=>{if(p.type!=='literal')v[p.type]=p.value;});
+  return `${v.year}-${v.month}-${v.day}`;
+}
+
+function getTodayWeekdayKey(){
+  const weekday=new Intl.DateTimeFormat('en-US',{
+    timeZone:'Asia/Kolkata',weekday:'short'
+  }).format(new Date());
+  const map={Sun:'day_1',Mon:'day_2',Tue:'day_3',Wed:'day_4',Thu:'day_5',Fri:'day_6',Sat:'day_7'};
+  return map[weekday]||'day_1';
+}
+
+function findFestivalKey(festivals){
+  const list=Array.isArray(festivals)?festivals:[];
+  for(const fest of list){
+    const raw=[
+      fest?.name,
+      fest?.local_names?.hindi,
+      ...(Array.isArray(fest?.also_known_as)?fest.also_known_as:[])
+    ].filter(Boolean).join(' ').toLowerCase();
+
+    for(const [word,key] of Object.entries(FESTIVAL_KEYWORDS)){
+      if(raw.includes(word))return key;
+    }
+  }
+  return null;
+}
+
+async function setAutomaticCalendarSelection(){
+  const fallback=getTodayWeekdayKey();
+  let selectedKey=null;
+
+  try{
+    const today=getTodayIST();
+    const response=await fetch(`${FESTIVAL_API_URL}?date=${encodeURIComponent(today)}&religion=hindu`,{
+      cache:'no-store'
+    });
+    if(!response.ok)throw new Error('Festival API unavailable');
+    const json=await response.json();
+    const festivals=Array.isArray(json)?json:(json.data||json.festivals||[]);
+    selectedKey=findFestivalKey(festivals);
+  }catch(err){
+    console.warn('Online Hindi calendar unavailable; weekday fallback active.',err);
+  }
+
+  const key=(selectedKey&&AUTO_FILES[selectedKey])?selectedKey:fallback;
+  if(festivalSelect){
+    const option=[...festivalSelect.options].find(o=>o.value===key);
+    if(option)festivalSelect.value=key;
+  }
+  await loadAutoBackgrounds(key);
+  return key;
+}
+
+// Run automatic calendar once at startup and again after local midnight.
+// Festival has priority over weekday; weekday is the safe offline fallback.
+function scheduleNextCalendarRefresh(){
+  const now=new Date();
+  const nowIST=new Date(now.toLocaleString('en-US',{timeZone:'Asia/Kolkata'}));
+  const next=new Date(nowIST);
+  next.setHours(24,1,0,0);
+  const delay=Math.max(60000,next-nowIST);
+  setTimeout(async()=>{
+    await setAutomaticCalendarSelection();
+    scheduleNextCalendarRefresh();
+  },delay);
 }
 
 const sideQuotes4Lines={
@@ -933,6 +1064,81 @@ function animate(){
   requestAnimationFrame(animate);
 }
 
+
+// ===== Suvichar Tab: type, paste, or choose an online-style collection =====
+const ONLINE_SUVICHAR = [
+  'मेहनत इतनी खामोशी से करो कि सफलता शोर मचा दे।',
+  'हर नया दिन नई उम्मीद और नया अवसर लेकर आता है।',
+  'जो अपने आप पर विश्वास रखता है, वही आगे बढ़ता है।',
+  'सकारात्मक सोच छोटे कदमों को भी बड़ी मंज़िल तक पहुँचा सकती है।',
+  'समय की कद्र करने वाला व्यक्ति अवसर की कद्र करना सीखता है।',
+  'धैर्य रखिए, अच्छे परिणामों को आने में समय लगता है।',
+  'मुश्किलें रास्ता रोकने नहीं, आपको मजबूत बनाने आती हैं।',
+  'आज का अच्छा प्रयास कल की बड़ी सफलता बन सकता है।'
+];
+
+function setCustomSuvicharText(value){
+  const input=document.getElementById('customSuvicharInput');
+  if(input)input.value=value;
+  if(festivalSelect){
+    festivalSelect.value='custom_suvichar';
+    updateCustomSuvicharUI();
+    loadAutoBackgrounds('custom_suvichar');
+  }
+}
+
+function populateOnlineSuvichar(){
+  const select=document.getElementById('onlineSuvicharSelect');
+  if(!select || select.dataset.ready)return;
+  ONLINE_SUVICHAR.forEach((quote,i)=>{
+    const option=document.createElement('option');
+    option.value=String(i);
+    option.textContent=quote;
+    select.appendChild(option);
+  });
+  select.dataset.ready='1';
+}
+
+function loadSuvicharAd(){
+  const area=document.getElementById('suvicharAdContent');
+  if(!area)return;
+  area.innerHTML='';
+  // Existing third-party ad script is reused as a normal, clearly separated ad area.
+  const script=document.createElement('script');
+  script.src='https://pl31008431.profitableratecpmnetwork.com/18/a7/73/18a773cc1ffc556738ba4fb2eac52902.js';
+  script.async=true;
+  script.onerror=()=>console.warn('Suvichar tab ad could not load in this browser/context.');
+  area.appendChild(script);
+}
+
+document.getElementById('openSuvicharTab')?.addEventListener('click',()=>{
+  const panel=document.getElementById('suvicharPanel');
+  if(!panel)return;
+  const opening=panel.style.display==='none';
+  panel.style.display=opening?'block':'none';
+  if(opening){
+    populateOnlineSuvichar();
+    loadSuvicharAd();
+  }
+});
+
+document.getElementById('useTypedSuvichar')?.addEventListener('click',()=>{
+  const value=(document.getElementById('suvicharQuickInput')?.value||'').trim();
+  if(value)setCustomSuvicharText(value);
+});
+
+document.getElementById('onlineSuvicharSelect')?.addEventListener('change',e=>{
+  const quote=ONLINE_SUVICHAR[Number(e.target.value)];
+  if(quote)setCustomSuvicharText(quote);
+});
+
+document.getElementById('newOnlineSuvichar')?.addEventListener('click',()=>{
+  const quote=ONLINE_SUVICHAR[Math.floor(Math.random()*ONLINE_SUVICHAR.length)];
+  const select=document.getElementById('onlineSuvicharSelect');
+  if(select)select.value=String(ONLINE_SUVICHAR.indexOf(quote));
+  setCustomSuvicharText(quote);
+});
+
 const customSuvicharBox=document.getElementById('customSuvicharBox');
 function updateCustomSuvicharUI(){
   if(customSuvicharBox)customSuvicharBox.style.display=festivalSelect.value==='custom_suvichar'?'block':'none';
@@ -1022,10 +1228,18 @@ document.getElementById('whatsappShareBtn').addEventListener('click',()=>{
   },1800);
 });
 
-loadAutoBackgrounds(festivalSelect.value);
-setTimeout(detectFacesAndSetSafeArea,300);
-showAd();
-requestAnimationFrame(animate);
+(async()=>{
+  try{
+    await setAutomaticCalendarSelection();
+  }catch(err){
+    console.warn('Automatic calendar startup failed.',err);
+    await loadAutoBackgrounds(getTodayWeekdayKey());
+  }
+  setTimeout(detectFacesAndSetSafeArea,300);
+  showAd();
+  requestAnimationFrame(animate);
+  scheduleNextCalendarRefresh();
+})();
 </script>
 </body>
 </html>
