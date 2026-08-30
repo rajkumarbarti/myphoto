@@ -28,6 +28,57 @@ button:disabled{opacity:.7;cursor:not-allowed}
 .ad-slot{width:100%;min-height:90px;margin:8px 0 12px;border:1px dashed rgba(255,204,0,.45);border-radius:8px;background:rgba(0,0,0,.18);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
 .ad-label{font-size:9px;color:rgba(255,235,59,.55);letter-spacing:1px;margin-bottom:3px}
 #adContent{width:100%;min-height:60px;display:flex;align-items:center;justify-content:center}
+/* --- Soft, Medium aur Decent Flowing Background (.app-card ke liye) --- */
+
+.app-card {
+    /* Bahut hi halkey aur soft colors jo aankhon ko nahi chubhenge */
+    background-image: linear-gradient(270deg, #1a1a2e, #16213e, #0f3460, #1a1a2e) !important;
+    background-size: 300% 300% !important;
+    animation: softColorFlow 10s ease infinite !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Yahan hum ek halka sa 'Stars / Sparkle' (Taare jaisa) effect add kar rahe hain background ke liye */
+.app-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Halkay se chamakte hue particles / stars jaisa pattern */
+    background-image: radial-gradient(white 1px, transparent 1px), radial-gradient(rgba(255,255,255,0.5) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
+    opacity: 0.3; /* Ise halka rakha hai taaki aankhon ko chubhe nahi */
+    animation: twinkleEffect 4s ease infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Beech ka suvichar aur canvas wala hissa bilkul safe rahega */
+.canvas-container, 
+#customSuvichaarBox, 
+.app-card canvas, 
+.app-card img {
+    background: transparent !important;
+    position: relative;
+    z-index: 5;
+}
+
+/* Rangon ke chalne ki slow aur soft speed */
+@keyframes softColorFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Taaron ke chamakne ka animation */
+@keyframes twinkleEffect {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.5; }
+}
 </style>
 </head>
 <body>
@@ -461,7 +512,7 @@ async function loadAutoBackgrounds(key){
   if(autoBgImages.length){
     setStatus('ऑटो बैकग्राउंड लोड हो गया ✓');
   }else{
-    setStatus('ऑटो फोटो नहीं मिली — GitHub में नाम/पाथ जाँचें');
+    setStatus('ऑटो फोटो नहीं मिली — ऑनलाइन फोटो उपलब्ध नहीं, कृपया अपना फोटो डालिए');
   }
 }
 
@@ -1300,5 +1351,242 @@ document.getElementById('whatsappShareBtn').addEventListener('click',()=>{
   scheduleNextCalendarRefresh();
 })();
 </script>
+<!-- ===== Directed by RK Logo ===== -->
+<div class="directed-rk-logo" aria-label="Directed by RK">
+  <div class="directed-by">Directed by</div>
+
+  <div class="rk-mark">
+    <span class="rk-r">R</span>
+    <span class="rk-k">K</span>
+    <span class="rk-arrow">➜</span>
+  </div>
+</div>
+
+<style>
+/* कोई बॉक्स / बैकग्राउंड नहीं */
+.directed-rk-logo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+    margin-left: 759px;
+    margin-top: -73px;
+  gap: 4px;
+  width: clamp(92px, 18vw, 150px);
+  height: clamp(42px, 8vw, 65px);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  overflow: visible;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Directed by */
+.directed-by {
+  position: relative;
+  z-index: 5;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(9px, 1.7vw, 14px);
+  font-weight: 700;
+  font-style: italic;
+  white-space: nowrap;
+  color: #ffd45a;
+  text-shadow:
+    0 0 2px #fff,
+    0 0 5px #ff9d00,
+    0 0 9px rgba(255, 145, 0, .8);
+  transform: translateY(2px);
+}
+
+/* R + K area */
+.rk-mark {
+  position: relative;
+  width: clamp(38px, 7vw, 62px);
+  height: 100%;
+  flex-shrink: 0;
+}
+
+/* R ऊपर */
+.rk-r {
+  position: absolute;
+  right: 2px;
+  top: -5px;
+  z-index: 3;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(27px, 5.5vw, 45px);
+  line-height: .8;
+  font-weight: 900;
+  color: #ffd22e;
+  -webkit-text-stroke: 1px #ff6b00;
+  text-shadow:
+    1px 1px 0 #8a2600,
+    0 0 5px #ff9d00,
+    0 0 11px rgba(255, 80, 0, .8);
+}
+
+/* K नीचे */
+.rk-k {
+  position: absolute;
+  right: 0;
+  bottom: -5px;
+  z-index: 2;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(27px, 5.5vw, 45px);
+  line-height: .8;
+  font-weight: 900;
+  color: #20cfff;
+  -webkit-text-stroke: 1px #006fc9;
+  text-shadow:
+    1px 1px 0 #003d78,
+    0 0 5px #00cfff,
+    0 0 11px rgba(0, 180, 255, .8);
+}
+
+/* तीर — नीचे-बाएँ से ऊपर-दाएँ */
+.rk-arrow {
+  position: absolute;
+  z-index: 6;
+  left: -5px;
+  bottom: 9px;
+  width: 78px;
+  font-family: Arial, sans-serif;
+  font-size: clamp(17px, 3.2vw, 27px);
+  font-weight: 900;
+  color: #ffd52e;
+  transform: rotate(-25deg);
+  transform-origin: left center;
+  text-shadow:
+    0 0 3px #fff,
+    0 0 6px #ff8c00,
+    0 0 12px rgba(255, 90, 0, .9);
+  white-space: nowrap;
+}
+
+/* तीर की चमक */
+.rk-arrow::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 68px;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #ffb300,
+    #fff,
+    #ffb300
+  );
+  box-shadow:
+    0 0 4px #ff9d00,
+    0 0 8px #ff5e00;
+  transform: translateY(-50%);
+}
+
+/* मोबाइल पर बहुत compact */
+@media (max-width: 480px) {
+  .directed-rk-logo {
+    width: 96px;
+    height: 45px;
+    gap: 2px;
+  }
+
+  .directed-by {
+    font-size: 9px;
+  }
+
+  .rk-mark {
+    width: 39px;
+  }
+
+  .rk-r,
+  .rk-k {
+    font-size: 28px;
+  }
+
+  .rk-arrow {
+    width: 52px;
+    left: -3px;
+    bottom: 8px;
+    font-size: 17px;
+  }
+
+  .rk-arrow::before {
+    width: 46px;
+  }
+}
+
+/* WhatsApp Share के ठीक लेफ्ट साइड रखने के लिए */
+.whatsapp-share-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  background: transparent !important;
+  border: none !important;
+}
+
+/* यदि आपका WhatsApp button पहले से मौजूद है,
+   तो उसे इसी row में रखें */
+<!-- बड़ा और साफ़ दिखने वाला लाइव डिजिटल क्लॉक और तारीख -->
+<div id="big-live-clock" style="
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999999;
+    background: #111111;
+    color: #00ffcc;
+    font-size: 28px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    text-align: center;
+    padding: 15px 30px;
+    border: 3px solid #00ffcc;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.6);
+    letter-spacing: 2px;
+">
+    ⏳ लोड हो रहा है...
+</div>
+
+<script>
+    function startBigClock() {
+        const now = new Date();
+        
+        // दिन और तारीख
+        const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+        const dateText = now.toLocaleDateString('en-US', options);
+        
+        // समय (घंटे, मिनट, सेकंड)
+        let hours = now.getHours();
+        let minutes = now.getMinutes();
+        let seconds = now.getSeconds();
+        
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+        
+        const timeText = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
+        
+        // फाइनल टेक्स्ट
+        const displayText = dateText + "  ➔  " + timeText;
+        
+        const targetDiv = document.getElementById('big-live-clock');
+        if (targetDiv) {
+            targetDiv.innerText = displayText;
+        }
+    }
+    
+    // हर एक सेकंड में चलना
+    setInterval(startBigClock, 1000);
+    startBigClock();
+</script>
+</style>
 </body>
 </html>
